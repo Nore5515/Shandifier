@@ -1,13 +1,18 @@
 import java.util.ArrayList;
+import java.util.Scanner;
+
+//SHANDIFIER VERSION v0.1
 
 //Root Cause (something that has no reason, it just is OR the reason is so irrelevant it genuinely isn't worth the effort to write a cause)
 //Cause (default node, it's parents are it's cause and it's children are it's effects)
 //Root Reason (no children at all, it is something that affects literally nothing)
 
 public class Main{
-  public static void main(String args[]){
-    
-  }
+	
+	public static void main(String args[]){
+		String version = "v0.1";
+		ShandMan sm = new ShandMan(version);
+	}
 }
 
 //If there are no parents, it is a Root Cause
@@ -39,4 +44,54 @@ class Node{
     s += (":\t" + text);
     return s;
   }
+}
+
+//ShandManager
+//This manages user input, computer output
+//It will take in nodes, assign nodes, remove nodes, display a tree of nodes
+//It will save nodemaps and be able to load maps
+class ShandMan{
+	
+	ArrayList<Node> nodelist;
+	boolean running;
+	String version;
+	
+	public ShandMan(String _version){
+		version = _version;
+		running = true;
+		nodelist = new ArrayList<Node>();
+		Scanner s = new Scanner(System.in);
+		String in, out;
+		
+		//Main Input Loop
+		while (running){
+			out = "Sorry, didn't get that.";
+			System.out.println("What do you want to do?");
+			in = s.next();
+			if (in.equals("Help") || in.equals("?") || in.equals("help")){
+				out = InHelp();
+			}
+			else if (in.equals("tostring") || in.equals("nodelist") || in.equals("seenodes") || in.equals("nodetree")){
+				out = ToString();
+			}
+			System.out.println(out);
+		}
+	}
+	
+	//return the string for whenever input is help
+	private String InHelp(){
+		String s = new String();
+		s += "Welcome to Shandifier " + version + "!\n";
+		s += "Current Commands are:";
+		s += "\nHelp (this menu): Help, help, ?";
+		s += "\nSee Nodes: tostring, nodelist, seenodes, nodetree";
+		return s;
+	}
+	
+	//return the string for the map
+	private String ToString(){
+		String s = new String();
+		return s;
+	}
+		
 }
