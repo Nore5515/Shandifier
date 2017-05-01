@@ -1,0 +1,42 @@
+import java.util.ArrayList;
+
+//Root Cause (something that has no reason, it just is OR the reason is so irrelevant it genuinely isn't worth the effort to write a cause)
+//Cause (default node, it's parents are it's cause and it's children are it's effects)
+//Root Reason (no children at all, it is something that affects literally nothing)
+
+public class Main{
+  public static void main(String args[]){
+    
+  }
+}
+
+//If there are no parents, it is a Root Cause
+//If there are no children, it is a Root Reason
+//If there is at least one child and one parent, it is a Cause
+class Node{
+  ArrayList<Node> parents,children;
+  String label, text;
+  public Node(String s){
+    parents = new ArrayList<Node>();
+    children = new ArrayList<Node>();
+    label = s;
+  }
+  
+  public void AddChild(Node n){children.add(n);}
+  public void AddParent(Node n){parents.add(n);}
+  public void BecomeChildNode(Node n){
+    AddChild(n);
+    n.AddParent(this);
+  }
+  public void BecomeParentNode(Node n){
+    AddParent(n);
+    n.AddChild(this);
+  }
+  
+  public String ToString(){
+    String s = new String();
+    s += label;
+    s += (":\t" + text);
+    return s;
+  }
+}
