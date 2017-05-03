@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -8,42 +9,57 @@ import java.util.Scanner;
 //Root Reason (no children at all, it is something that affects literally nothing)
 
 public class Main{
-	
-	public static void main(String args[]){
-		String version = "v0.1";
-		ShandMan sm = new ShandMan(version);
-	}
+
+    public static void main(String args[]){
+        String version = "v0.1";
+        ShandMan sm = new ShandMan(version);
+    }
 }
 
-//If there are no parents, it is a Root Cause
+//If there are no parents, it is a Root  
 //If there are no children, it is a Root Reason
-//If there is at least one child and one parent, it is a Cause
+//If there is at least one child and one parent, it is a Cause/Effect
 class Node{
-  ArrayList<Node> parents,children;
-  String label, text;
-  public Node(String s){
-    parents = new ArrayList<Node>();
-    children = new ArrayList<Node>();
-    label = s;
-  }
-  
-  public void AddChild(Node n){children.add(n);}
-  public void AddParent(Node n){parents.add(n);}
-  public void BecomeChildNode(Node n){
-    AddChild(n);
-    n.AddParent(this);
-  }
-  public void BecomeParentNode(Node n){
-    AddParent(n);
-    n.AddChild(this);
-  }
-  
-  public String ToString(){
-    String s = new String();
-    s += label;
-    s += (":\t" + text);
-    return s;
-  }
+    ArrayList<Node> parents,children;
+    String label, text;
+    public Node(String s){
+        parents = new ArrayList<Node>();
+        children = new ArrayList<Node>();
+        label = s;
+    }
+
+    public Node(String lab, String desc, ArrayList<Node> chill, ArrayList<Node> par){
+        label = lab;
+        text = desc;
+        parents = par;
+        children = chill;
+    }
+
+    public void AddChild(Node n){children.add(n);}
+    public void AddParent(Node n){parents.add(n);}
+    /*public void BecomeChildNode(Node n){
+        AddChild(n);
+        n.AddParent(this);
+    }
+    public void BecomeParentNode(Node n){
+        AddParent(n);
+        n.AddChild(this);
+    }*/
+
+    public String ToString(){
+        String s = new String();
+        s += label;
+        s += (":\t" + text);
+        s += "\n\tPARENTS:";
+        for (int x = 0; x < parents.size(); x++){
+            s += "\n\t\t" + parents.get(x).label;
+        }
+        s += "\nChildren:";
+        for (int x = 0; x < children.size(); x++){
+            s += "\n\t\t" + children.get(x).label;
+        }
+        return s;
+    }
 }
 
 //ShandManager
@@ -51,47 +67,115 @@ class Node{
 //It will take in nodes, assign nodes, remove nodes, display a tree of nodes
 //It will save nodemaps and be able to load maps
 class ShandMan{
-	
-	ArrayList<Node> nodelist;
-	boolean running;
-	String version;
-	
-	public ShandMan(String _version){
-		version = _version;
-		running = true;
-		nodelist = new ArrayList<Node>();
-		Scanner s = new Scanner(System.in);
-		String in, out;
-		
-		//Main Input Loop
-		while (running){
-			out = "Sorry, didn't get that.";
-			System.out.println("What do you want to do?");
-			in = s.next();
-			if (in.equals("Help") || in.equals("?") || in.equals("help")){
-				out = InHelp();
-			}
-			else if (in.equals("tostring") || in.equals("nodelist") || in.equals("seenodes") || in.equals("nodetree")){
-				out = ToString();
-			}
-			System.out.println(out);
-		}
-	}
-	
-	//return the string for whenever input is help
-	private String InHelp(){
-		String s = new String();
-		s += "Welcome to Shandifier " + version + "!\n";
-		s += "Current Commands are:";
-		s += "\nHelp (this menu): Help, help, ?";
-		s += "\nSee Nodes: tostring, nodelist, seenodes, nodetree";
-		return s;
-	}
-	
-	//return the string for the map
-	private String ToString(){
-		String s = new String();
-		return s;
-	}
-		
+
+    ArrayList<Node> nodelist;
+    boolean running, addrunning;
+    String version;
+    String in, out;
+    String nodeLabel, nodeDesc;
+    ArrayList<Node> nodeChildren,nodeParents;
+
+    public ShandMan(String _version){
+        version = _version;
+        running = true;
+        nodelist = new ArrayList<Node>();
+        Scanner s = new Scanner(System.in);
+
+
+        //Main Input Loop
+        while (running){
+            out = "Sorry, didn't get that.";
+            System.out.println("What do you want to do?");
+            in = s.next();
+            if (in.equals("Help") || in.equals("?") || in.equals("help")){
+                System.out.println(InHelp());
+            }
+            else if (in.equals("tostring") || in.equals("nodelist") || in.equals("seenodes") || in.equals("nodetree")){
+                System.out.println(ToString());
+            }
+            else if (in.equals("add") || in.equals("new") || in.equals("addnode") || in.equals("newnode") || in.equals("create") || in.equals("new node") || in.equals("create node") || in.equals("add node")) {
+                System.out.println("Node Label: ");
+                in = s.next();
+                nodeLabel = in;
+
+                System.out.println("Node Desc: ");
+                in = s.next();
+                nodeDesc = in;
+
+                addrunning = true;
+                nodeParents = new ArrayList<Node>();
+                nodeChildren = new ArrayList<Node>();
+                while (addrunning) {
+                    System.out.println("Parent(cause) Label: ");
+                    in = s.next();
+                    if (in.equals("next") || in.equals("skip") || in.equals("none") || in.equals("0")) {
+                        addrunning = false;
+                    } else if (FindNode(in) == null) {
+                        System.out.println(in + " does not exist!");
+                    } else {
+                        System.out.println(in + " was added to " + nodeLabel + " as a parent(cause)");
+                        nodeParents.add(FindNode(in));
+                    }
+                }
+
+                addrunning = true;
+                while (addrunning) {
+                    System.out.println("Children(effect) Label: ");
+                    in = s.next();
+                    if (in.equals("next") || in.equals("skip") || in.equals("none") || in.equals("0")) {
+                        addrunning = false;
+                    } else if (FindNode(in) == null) {
+                        System.out.println(in + " does not exist!");
+                    } else {
+                        System.out.println(in + " was added to " + nodeLabel + " as a child(effect)");
+                        nodeChildren.add(FindNode(in));
+                    }
+                }
+
+                Add(nodeLabel, nodeDesc, nodeChildren, nodeParents);
+                System.out.println(nodelist.get(nodelist.size() - 1).ToString());
+            }
+            else{
+                System.out.println(out);
+            }
+
+        }
+    }
+
+    private Node FindNode(String label){
+        for (int x = 0; x < nodelist.size(); x++){
+            if (nodelist.get(x).label.equals(label)){
+                return nodelist.get(x);
+            }
+        }
+        return null;
+    }
+
+    private void Add(String label,String desc, ArrayList<Node> children, ArrayList<Node> parents) {
+        Node n = new Node(label,desc,children,parents);
+        nodelist.add(n);
+    }
+
+    //return the string for whenever input is help
+    private String InHelp(){
+        String s = new String();
+        s += "Welcome to Shandifier " + version + "!\n";
+        s += "Current Commands are:";
+        s += "\nHelp (this menu): Help, help, ?";
+        s += "\nSee Nodes: tostring, nodelist, seenodes, nodetree";
+        return s;
+    }
+
+    //return the string for the map
+    private String ToString(){
+        String s = new String();
+        for (int x = 0; x < nodelist.size(); x++){
+            if(nodelist.get(x).parents.size() == 0){
+                s += "RootCause: " + nodelist.get(x).ToString();
+                for (int x = 0; )
+            }
+        }
+        return s;
+    }
+
 }
