@@ -8,7 +8,7 @@ import java.util.Scanner;
 //Cause (default node, it's parents are it's cause and it's children are it's effects)
 //Root Reason (no children at all, it is something that affects literally nothing)
 
-public class HelloWorld{
+public class Main{
 
     public static void main(String args[]){
         String version = "v0.1";
@@ -50,11 +50,11 @@ class Node{
         String s = new String();
         s += label;
         s += (":\t" + text);
-        s += "\n\tPARENTS:";
+        s += "\n\tParents:";
         for (int x = 0; x < parents.size(); x++){
             s += "\n\t\t" + parents.get(x).label;
         }
-        s += "\nChildren:";
+        s += "\n\tChildren:";
         for (int x = 0; x < children.size(); x++){
             s += "\n\t\t" + children.get(x).label;
         }
@@ -97,22 +97,28 @@ class ShandMan{
                 System.out.println("Node Label: ");
                 in = s.next();
                 nodeLabel = in;
+                nodeParents = new ArrayList<Node>();
+                nodeChildren = new ArrayList<Node>();
 
                 System.out.println("Node Desc: ");
                 in = s.next();
                 nodeDesc = in;
-
+				
+				//While the user is adding
                 addrunning = true;
-                nodeParents = new ArrayList<Node>();
-                nodeChildren = new ArrayList<Node>();
                 while (addrunning) {
                     System.out.println("Parent(cause) Label: ");
                     in = s.next();
+                    //If input == next, skip, none or 0, exit loop
                     if (in.equals("next") || in.equals("skip") || in.equals("none") || in.equals("0")) {
                         addrunning = false;
-                    } else if (FindNode(in) == null) {
+                    } 
+                    //If the node you gave doesn't exist in the list, say so
+                    else if (FindNode(in) == null) {
                         System.out.println(in + " does not exist!");
-                    } else {
+                    } 
+                    //
+                    else {
                         System.out.println(in + " was added to " + nodeLabel + " as a parent(cause)");
                         nodeParents.add(FindNode(in));
                         FindNode(in).children.add(FindNode(nodeLabel));
