@@ -8,7 +8,7 @@ import java.util.Scanner;
 //Cause (default node, it's parents are it's cause and it's children are it's effects)
 //Root Reason (no children at all, it is something that affects literally nothing)
 
-public class Main{
+public class HelloWorld{
 
     public static void main(String args[]){
         String version = "v0.1";
@@ -91,7 +91,7 @@ class ShandMan{
                 System.out.println(InHelp());
             }
             else if (in.equals("tostring") || in.equals("nodelist") || in.equals("seenodes") || in.equals("nodetree")){
-                System.out.println(ToString());
+                System.out.println(NodePath(nodelist.get(0)));
             }
             else if (in.equals("add") || in.equals("new") || in.equals("addnode") || in.equals("newnode") || in.equals("create") || in.equals("new node") || in.equals("create node") || in.equals("add node")) {
                 System.out.println("Node Label: ");
@@ -115,6 +115,7 @@ class ShandMan{
                     } else {
                         System.out.println(in + " was added to " + nodeLabel + " as a parent(cause)");
                         nodeParents.add(FindNode(in));
+                        FindNode(in).children.add(FindNode(nodeLabel));
                     }
                 }
 
@@ -167,12 +168,15 @@ class ShandMan{
     }
 
     //return the string for the map
-    private String ToString(){
+    private String NodePath(Node n){
         String s = new String();
-        for (int x = 0; x < nodelist.size(); x++){
-            if(nodelist.get(x).parents.size() == 0){
-                s += "RootCause: " + nodelist.get(x).ToString();
-                for (int x = 0; )
+        if (n.children.size() == 0){
+            s = n.label + "\n";
+        }
+        else{
+            for (int x = 0; x < n.children.size(); x++){
+                s += n.label + "->";
+                s += NodePath(n.children.get(x));
             }
         }
         return s;
