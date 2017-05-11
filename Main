@@ -4,21 +4,54 @@ import java.util.Scanner;
 
 //SHANDIFIER VERSION v0.1
 
+//Jargon Bargin
 //Root Cause (something that has no reason, it just is OR the reason is so irrelevant it genuinely isn't worth the effort to write a cause)
 //Cause (default node, it's parents are it's cause and it's children are it's effects)
 //Root Reason (no children at all, it is something that affects literally nothing)
-
-public class Main{
-
-    public static void main(String args[]){
-        String version = "v0.1";
-        ShandMan sm = new ShandMan(version);
-    }
-}
-
 //If there are no parents, it is a Root  
 //If there are no children, it is a Root Reason
 //If there is at least one child and one parent, it is a Cause/Effect
+
+//Tasks
+//1) Be able to add nodes to the tree
+//2) Be able to connect a node to it's parent nodes
+//3) Be able to connect a node to it's child nodes
+//4) Be able to remove nodes, in turn removing it's parent/child
+//5) ToString displays the node tree by each path, such as (a->b->d,a->b->c->d)
+//6) Be able to save node trees
+//7) Be able to load node trees
+
+public class Main{
+	
+	//Version doesn't really matter. It just looks nice.
+    public static void main(String args[]){
+        final String version = "v0.1";
+        Intro(version);
+        ShandMan sm = new ShandMan(version);
+    }
+    
+    //Run intro to look nice, a bit of waiting, total time waited 2.5 seconds.
+    public static void Intro(String ver){
+		System.out.println("Running Shandifier " + ver);
+		try{
+				Thread.sleep(1000);
+			}
+			catch (InterruptedException e){
+				e.printStackTrace();
+			}
+        for (int x = 0; x < 3; x++){
+			System.out.println(".\n");
+			try{
+				Thread.sleep(500);
+			}
+			catch (InterruptedException e){
+				e.printStackTrace();
+			}
+        }
+	}
+}
+
+//
 class Node{
     ArrayList<Node> parents,children;
     String label, text;
